@@ -167,9 +167,13 @@ COPY entrypoint.sh /usr/local/bin/opencode-entrypoint
 COPY docker/scripts/sandbox-localhost-bridge.js /usr/local/lib/opencode/sandbox-localhost-bridge.js
 COPY docker/scripts/qwen-cot-bridge.js /usr/local/lib/opencode/qwen-cot-bridge.js
 COPY docker/configs/opencode.json /tmp/opencode.json
-COPY docker/configs/opencode_serena.json /tmp/opencode_serena.json
+COPY docker/configs/opencode_serena.jso[n] /tmp/
 
 RUN if [ -n "${SERENA_VERSION:-}" ]; then \
+      if [ ! -f "/tmp/opencode_serena.json" ]; then \
+        echo "ERROR: SERENA_VERSION is set but opencode_serena.json was not found!"; \
+        exit 1; \
+      fi; \
       mv /tmp/opencode_serena.json /home/agent/.config/opencode/opencode.json && \
       uv tool install "git+https://github.com/oraios/serena@v${SERENA_VERSION}"; \
     else \
